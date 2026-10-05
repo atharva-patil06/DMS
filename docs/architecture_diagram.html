@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>HasseQuest architecture</title>
+<style>
+  body { margin: 0; background: #fff; font-family: "Segoe UI", Arial, sans-serif; }
+  svg text { font-family: "Segoe UI", Arial, sans-serif; }
+  .layer-title { font-size: 20px; font-weight: 700; fill: #1f2937; }
+  .layer-note { font-size: 14px; fill: #4b5563; }
+  .box-title { font-size: 15px; font-weight: 700; fill: #1f2937; }
+  .box-text { font-size: 12.5px; fill: #374151; }
+  .arrow-label { font-size: 13.5px; fill: #1f2937; font-weight: 600; }
+</style>
+</head>
+<body>
+<!-- Source for docs/architecture.png. Each box is a real file in the repo. -->
+<svg width="1400" height="860" viewBox="0 0 1400 860" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1f2937"/>
+    </marker>
+  </defs>
+  <text x="700" y="38" text-anchor="middle" style="font-size:26px;font-weight:800" fill="#1f2937">HasseQuest: three-layer architecture (Python + Flask)</text>
+
+  <!-- UI layer -->
+  <rect x="30" y="60" width="1340" height="180" rx="14" fill="#e0f2fe" stroke="#0ea5e9" stroke-width="2.5"/>
+  <text x="50" y="90" class="layer-title">UI layer: frontend/</text>
+  <text x="50" y="112" class="layer-note">HTML + CSS + vanilla JavaScript, diagrams in SVG. No mathematics here.</text>
+  <rect x="50" y="130" width="240" height="90" rx="10" fill="#fff" stroke="#7dd3fc"/>
+  <text x="65" y="155" class="box-title">index.html + style.css</text>
+  <text x="65" y="177" class="box-text">left: input / level task</text>
+  <text x="65" y="195" class="box-text">centre: canvas, right: Show</text>
+  <text x="65" y="211" class="box-text">Working / Theory / Score</text>
+  <rect x="310" y="130" width="240" height="90" rx="10" fill="#fff" stroke="#7dd3fc"/>
+  <text x="325" y="155" class="box-title">main.js</text>
+  <text x="325" y="177" class="box-text">Sandbox input methods,</text>
+  <text x="325" y="195" class="box-text">examples, campaign tasks,</text>
+  <text x="325" y="211" class="box-text">boss timer (display only)</text>
+  <rect x="570" y="130" width="240" height="90" rx="10" fill="#fff" stroke="#7dd3fc"/>
+  <text x="585" y="155" class="box-title">canvas.js</text>
+  <text x="585" y="177" class="box-text">SVG nodes and edges,</text>
+  <text x="585" y="195" class="box-text">drag and drop, draw edges,</text>
+  <text x="585" y="211" class="box-text">colour coding, auto-layout</text>
+  <rect x="830" y="130" width="240" height="90" rx="10" fill="#fff" stroke="#7dd3fc"/>
+  <text x="845" y="155" class="box-title">ui.js</text>
+  <text x="845" y="177" class="box-text">error banners, step list,</text>
+  <text x="845" y="195" class="box-text">matrices, summary cards,</text>
+  <text x="845" y="211" class="box-text">feedback, score board</text>
+  <rect x="1090" y="130" width="260" height="90" rx="10" fill="#fff" stroke="#0ea5e9" stroke-width="2"/>
+  <text x="1105" y="155" class="box-title">api.js</text>
+  <text x="1105" y="177" class="box-text">fetch() wrappers; every reply</text>
+  <text x="1105" y="195" class="box-text">becomes {ok:true,...} or a</text>
+  <text x="1105" y="211" class="box-text">friendly {ok:false,error}</text>
+
+  <line x1="1220" y1="222" x2="1220" y2="300" stroke="#1f2937" stroke-width="2.5" marker-end="url(#a)"/>
+  <line x1="1180" y1="300" x2="1180" y2="224" stroke="#1f2937" stroke-width="2.5" marker-end="url(#a)"/>
+  <text x="1160" y="262" text-anchor="end" class="arrow-label">HTTP on 127.0.0.1:8080: POST form-encoded fields</text>
+  <text x="1160" y="282" text-anchor="end" class="arrow-label">-> JSON reply</text>
+
+  <!-- App layer -->
+  <rect x="30" y="300" width="1340" height="230" rx="14" fill="#f3e8ff" stroke="#a855f7" stroke-width="2.5"/>
+  <text x="50" y="330" class="layer-title">App layer: app/ (Python 3 + Flask)</text>
+  <text x="50" y="352" class="layer-note">The web server, files and JSON live only here. Catches InputError and turns it into a JSON error reply.</text>
+  <rect x="1090" y="370" width="260" height="140" rx="10" fill="#fff" stroke="#a855f7" stroke-width="2"/>
+  <text x="1105" y="395" class="box-title">server.py + run.py</text>
+  <text x="1105" y="417" class="box-text">Flask app on 127.0.0.1:8080,</text>
+  <text x="1105" y="435" class="box-text">serves frontend/, 1 MB body</text>
+  <text x="1105" y="453" class="box-text">limit, decodes form fields,</text>
+  <text x="1105" y="471" class="box-text">error handlers: every error</text>
+  <text x="1105" y="489" class="box-text">is JSON, never a crash</text>
+  <rect x="830" y="370" width="240" height="140" rx="10" fill="#fff" stroke="#a855f7" stroke-width="2"/>
+  <text x="845" y="395" class="box-title">api.py (routes)</text>
+  <text x="845" y="417" class="box-text">/api/analyze, /api/bounds,</text>
+  <text x="845" y="435" class="box-text">/api/check-hasse, /api/levels,</text>
+  <text x="845" y="453" class="box-text">/api/levels/&lt;id&gt;/check|hint,</text>
+  <text x="845" y="471" class="box-text">/api/generate, /api/score</text>
+  <text x="845" y="489" class="box-text">fields -> core calls -> dict</text>
+  <rect x="570" y="370" width="240" height="140" rx="10" fill="#fff" stroke="#d8b4fe"/>
+  <text x="585" y="395" class="box-title">game.py</text>
+  <text x="585" y="417" class="box-text">checkers for 6 level types,</text>
+  <text x="585" y="435" class="box-text">feedback, score, stars, hints,</text>
+  <text x="585" y="453" class="box-text">unlocks, boss timer (server</text>
+  <text x="585" y="471" class="box-text">clock); GameSession = the only</text>
+  <text x="585" y="489" class="box-text">mutable state</text>
+  <rect x="310" y="370" width="240" height="64" rx="10" fill="#fff" stroke="#d8b4fe"/>
+  <text x="325" y="395" class="box-title">level_loader.py</text>
+  <text x="325" y="417" class="box-text">reads + validates levels</text>
+  <rect x="310" y="446" width="240" height="64" rx="10" fill="#fff" stroke="#d8b4fe"/>
+  <text x="325" y="471" class="box-title">generators.py</text>
+  <text x="325" y="493" class="box-text">random posets (boss)</text>
+  <rect x="50" y="370" width="240" height="140" rx="10" fill="#fff" stroke="#d8b4fe"/>
+  <text x="65" y="395" class="box-title">tests/ (pytest)</text>
+  <text x="65" y="417" class="box-text">81 tests: core, game,</text>
+  <text x="65" y="435" class="box-text">data-driven blocks, every</text>
+  <text x="65" y="453" class="box-text">route via app.test_client()</text>
+  <text x="65" y="471" class="box-text">(no network needed)</text>
+  <line x1="1088" y1="440" x2="812" y2="440" stroke="#1f2937" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="828" y1="440" x2="812" y2="440" stroke="#1f2937" stroke-width="2"/>
+  <line x1="568" y1="410" x2="552" y2="404" stroke="#1f2937" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="568" y1="470" x2="552" y2="476" stroke="#1f2937" stroke-width="2" marker-end="url(#a)"/>
+
+  <line x1="950" y1="512" x2="950" y2="590" stroke="#1f2937" stroke-width="2.5" marker-end="url(#a)"/>
+  <line x1="690" y1="512" x2="690" y2="590" stroke="#1f2937" stroke-width="2.5" marker-end="url(#a)"/>
+  <text x="970" y="560" class="arrow-label">plain Python function calls (Poset, step list, result objects)</text>
+
+  <!-- Core layer -->
+  <rect x="30" y="590" width="1340" height="200" rx="14" fill="#dcfce7" stroke="#22c55e" stroke-width="2.5"/>
+  <text x="50" y="620" class="layer-title">Math core: core/ (pure Python)</text>
+  <text x="50" y="642" class="layer-note">Plain lists, sets and loops. No Flask, no JSON, no files, no printing. Every function can append to a step list.</text>
+  <rect x="50" y="660" width="200" height="110" rx="10" fill="#fff" stroke="#86efac"/>
+  <text x="65" y="685" class="box-title">parsers.py</text>
+  <text x="65" y="707" class="box-text">pairs / matrix / rule</text>
+  <text x="65" y="725" class="box-text">-> validated Poset,</text>
+  <text x="65" y="743" class="box-text">12-element limit</text>
+  <rect x="265" y="660" width="200" height="110" rx="10" fill="#fff" stroke="#86efac"/>
+  <text x="280" y="685" class="box-title">relations.py</text>
+  <text x="280" y="707" class="box-text">4 properties with</text>
+  <text x="280" y="725" class="box-text">counterexamples,</text>
+  <text x="280" y="743" class="box-text">closures, Warshall</text>
+  <rect x="480" y="660" width="200" height="110" rx="10" fill="#fff" stroke="#86efac"/>
+  <text x="495" y="685" class="box-title">poset.py</text>
+  <text x="495" y="707" class="box-text">axioms, min/max,</text>
+  <text x="495" y="725" class="box-text">least/greatest, bounds,</text>
+  <text x="495" y="743" class="box-text">height and width</text>
+  <rect x="695" y="660" width="200" height="110" rx="10" fill="#fff" stroke="#86efac"/>
+  <text x="710" y="685" class="box-title">hasse.py</text>
+  <text x="710" y="707" class="box-text">cover relation</text>
+  <text x="710" y="725" class="box-text">(transitive reduction),</text>
+  <text x="710" y="743" class="box-text">levels for layout</text>
+  <rect x="910" y="660" width="200" height="110" rx="10" fill="#fff" stroke="#86efac"/>
+  <text x="925" y="685" class="box-title">lattice.py</text>
+  <text x="925" y="707" class="box-text">lub / glb tables,</text>
+  <text x="925" y="725" class="box-text">failing pair with</text>
+  <text x="925" y="743" class="box-text">explanation</text>
+  <rect x="1125" y="660" width="225" height="110" rx="10" fill="#fff" stroke="#86efac"/>
+  <text x="1140" y="685" class="box-title">steps, util, errors, types</text>
+  <text x="1140" y="707" class="box-text">step-list helpers, parse_int,</text>
+  <text x="1140" y="725" class="box-text">InputError, Poset(labels,</text>
+  <text x="1140" y="743" class="box-text">R = list of lists of 0/1)</text>
+
+  <rect x="30" y="805" width="1340" height="42" rx="10" fill="#f3f4f6" stroke="#9ca3af" stroke-width="2"/>
+  <text x="700" y="832" text-anchor="middle" class="box-title">Data layer: data/levels/*.txt (campaign levels) and tests/data/*.txt (test cases), plain "key: value" text</text>
+</svg>
+</body>
+</html>

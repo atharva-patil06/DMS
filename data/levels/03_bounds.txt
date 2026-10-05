@@ -1,0 +1,23 @@
+# Level type 3: Bounds challenge for a subset S.
+# Answer checked by bounds().
+
+id: 6
+type: bounds
+title: Bounds in the divisors of 36
+description: Divisibility on the divisors of 36 with S = {4, 6}. Pick the upper bounds, lower bounds, lub and glb of S.
+elements: 1 2 3 4 6 9 12 18 36
+rule: divisibility
+subset: 4 6
+points: 150
+unlock_after: 5
+hint: An upper bound of {4,6} is a common multiple inside the set.
+
+id: 7
+type: bounds
+title: No least upper bound
+description: A hand-built poset with S = {a, b}. Careful: some bounds may not exist.
+elements: a b c d t
+pairs: a>c a>d b>c b>d c>t d>t a>t b>t
+subset: a b
+points: 150
+unlock_after: 6

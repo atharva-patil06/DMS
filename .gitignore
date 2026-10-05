@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+.pytest_cache/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# report build intermediates (keep report.md and report.pdf)
+docs/report/report.html

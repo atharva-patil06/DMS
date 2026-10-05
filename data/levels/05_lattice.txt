@@ -1,0 +1,30 @@
+# Level type 5: Lattice or not? Justify "no" with a failing pair.
+# Checked by latticeCheck().
+
+id: 10
+type: lattice
+title: Divisors of 30
+description: Is divisibility on the divisors of 30 a lattice?
+elements: 1 2 3 5 6 10 15 30
+rule: divisibility
+points: 100
+unlock_after: 9
+
+id: 11
+type: lattice
+title: The N shape
+description: a < c, b < c and b < d. Lattice or not? If not, pick a pair that has no lub or no glb.
+elements: a b c d
+pairs: a>c b>c b>d
+points: 150
+unlock_after: 10
+hint: Look at the two minimal elements.
+
+id: 12
+type: lattice
+title: Two common multiples
+description: Divisibility on {1,2,3,12,18,36}. Lattice or not?
+elements: 1 2 3 12 18 36
+rule: divisibility
+points: 150
+unlock_after: 11

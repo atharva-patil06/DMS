@@ -1,0 +1,22 @@
+# Level type 4: Fix the relation by ADDING the fewest pairs.
+# Reflexive pairs are NOT added automatically here: they are part of the puzzle.
+# Checked by isPartialOrder() and computeClosures() (the answer is R*).
+
+id: 8
+type: fix_relation
+title: Repair a chain
+description: R = {(1,2), (2,3), (3,4)} on {1,2,3,4} is not a partial order. Add the fewest pairs so that it becomes one.
+elements: 1 2 3 4
+pairs: 1>2 2>3 3>4
+points: 150
+unlock_after: 7
+hint: Which pairs does reflexivity demand? Which does transitivity demand?
+
+id: 9
+type: fix_relation
+title: One pair short
+description: This relation on {a,b,c,d} is reflexive and antisymmetric, but something is still missing.
+elements: a b c d
+pairs: a>a b>b c>c d>d a>b b>d a>c c>d
+points: 100
+unlock_after: 8

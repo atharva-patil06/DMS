@@ -1,0 +1,102 @@
+# Data-driven tests for the check-hasse scoring and feedback.
+# edges: the player's drawn edges, a>b meaning b was drawn above a.
+# accuracy = correct / (true covering edges + wrong edges), as a percentage.
+
+name: perfect diagram for divisors of 12
+elements: 1 2 3 4 6 12
+rule: divisibility
+edges: 1>2;1>3;2>4;2>6;3>6;4>12;6>12
+expect_correct: 7
+expect_wrong: 0
+expect_missing: 0
+expect_kinds: correct
+expect_accuracy: 100
+expect_score: 100
+
+name: redundant transitive edge is wrong
+elements: 1 2 4
+rule: divisibility
+edges: 1>2;2>4;1>4
+expect_correct: 2
+expect_wrong: 1
+expect_missing: 0
+expect_kinds: correct redundant
+expect_accuracy: 67
+expect_score: 67
+
+name: edge drawn downward
+elements: 1 2 4
+rule: divisibility
+edges: 2>1;2>4
+expect_correct: 1
+expect_wrong: 1
+expect_missing: 1
+expect_kinds: downward correct missing
+expect_accuracy: 33
+
+name: edge between unrelated elements
+elements: 1 2 3 6
+rule: divisibility
+edges: 2>3;1>2;1>3;2>6;3>6
+expect_correct: 4
+expect_wrong: 1
+expect_kinds: unrelated correct
+expect_accuracy: 80
+
+name: nothing drawn
+elements: 1 2 3 4 6 12
+rule: divisibility
+edges:
+expect_correct: 0
+expect_missing: 7
+expect_kinds: missing
+expect_accuracy: 0
+expect_score: 0
+
+name: self loop
+elements: 1 2
+rule: divisibility
+edges: 1>1;1>2
+expect_correct: 1
+expect_wrong: 1
+expect_kinds: loop correct
+expect_accuracy: 50
+
+name: antichain with no edges is perfect
+elements: a b c
+relation:
+auto_reflexive: yes
+edges:
+expect_correct: 0
+expect_wrong: 0
+expect_missing: 0
+expect_kinds:
+expect_accuracy: 100
+
+name: antichain with an invented edge
+elements: a b c
+relation:
+auto_reflexive: yes
+edges: a>b
+expect_wrong: 1
+expect_kinds: unrelated
+expect_accuracy: 0
+
+name: duplicate drawn edges count once
+elements: 1 2 4
+rule: divisibility
+edges: 1>2;1>2;2>4
+expect_correct: 2
+expect_wrong: 0
+expect_accuracy: 100
+
+name: power set partial answer
+elements: e a b ab
+rule: subset
+edges: e>a;e>b;a>ab;e>ab
+expect_correct: 3
+expect_wrong: 1
+expect_missing: 1
+expect_kinds: correct redundant missing
+expect_accuracy: 60
+expect_score: 60

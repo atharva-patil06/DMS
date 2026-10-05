@@ -1,0 +1,30 @@
+# Level type 1: Build the Hasse diagram.
+# Answer checked by coverRelation(). Reflexive pairs are added automatically.
+
+id: 1
+type: build_hasse
+title: Divisors of 12
+description: Divisibility on {1,2,3,4,6,12}: a <= b means a divides b. Drag smaller elements lower and join each element to the elements that cover it.
+elements: 1 2 3 4 6 12
+rule: divisibility
+points: 100
+hint: 1 divides everything, so it sits at the bottom.
+
+id: 2
+type: build_hasse
+title: Power set of {a,b,c}
+description: Subset inclusion on all subsets of {a,b,c} (e is the empty set). Draw only the covering edges.
+elements: e a b c ab ac bc abc
+rule: subset
+points: 150
+unlock_after: 1
+hint: A set covers another when it has exactly one more letter.
+
+id: 3
+type: build_hasse
+title: Divisibility without 1
+description: Divisibility on {2,3,4,6,8,12,24}. There is no single bottom element this time.
+elements: 2 3 4 6 8 12 24
+rule: divisibility
+points: 150
+unlock_after: 2

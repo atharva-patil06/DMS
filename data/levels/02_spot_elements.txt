@@ -1,0 +1,21 @@
+# Level type 2: Spot the minimal, maximal, least and greatest elements.
+# Answer checked by specialElements().
+
+id: 4
+type: spot_elements
+title: Two bottoms, two tops
+description: Divisibility on {2,3,4,6,9,12,18}. Pick the minimal, maximal, least and greatest elements (choose "none" if one does not exist).
+elements: 2 3 4 6 9 12 18
+rule: divisibility
+points: 100
+unlock_after: 3
+hint: Minimal is not the same as least.
+
+id: 5
+type: spot_elements
+title: Some subsets
+description: Subset inclusion on {e, a, b, ab, ac}. Find the special elements.
+elements: e a b ab ac
+rule: subset
+points: 100
+unlock_after: 4

@@ -1,0 +1,279 @@
+# Data-driven poset tests. One block per case, blocks separated by a blank line.
+# Input keys: elements, and one of relation (pairs) / rule / matrix; auto_reflexive: yes
+# Expectation keys (all optional): expect_error (field name, or none), expect_poset,
+# expect_failed_axiom, expect_reflexive, expect_symmetric, expect_antisymmetric,
+# expect_transitive, expect_equivalence, expect_cycle, expect_total, expect_cover,
+# expect_minimal, expect_maximal, expect_least, expect_greatest, expect_lattice,
+# expect_height, expect_width. Lists are space separated and order does not matter.
+
+name: divisors of 12
+elements: 1 2 3 4 6 12
+rule: divisibility
+expect_error: none
+expect_poset: yes
+expect_total: no
+expect_cover: 1>2 1>3 2>4 2>6 3>6 4>12 6>12
+expect_minimal: 1
+expect_maximal: 12
+expect_least: 1
+expect_greatest: 12
+expect_lattice: yes
+expect_height: 4
+expect_width: 2
+
+name: divisors of 30
+elements: 1 2 3 5 6 10 15 30
+rule: divisibility
+expect_poset: yes
+expect_cover: 1>2 1>3 1>5 2>6 2>10 3>6 3>15 5>10 5>15 6>30 10>30 15>30
+expect_lattice: yes
+expect_height: 4
+expect_width: 3
+
+name: power set of abc
+elements: e a b c ab ac bc abc
+rule: subset
+expect_poset: yes
+expect_cover: e>a e>b e>c a>ab a>ac b>ab b>bc c>ac c>bc ab>abc ac>abc bc>abc
+expect_least: e
+expect_greatest: abc
+expect_lattice: yes
+expect_height: 4
+expect_width: 3
+
+name: leq is a chain
+elements: 3 1 2
+rule: leq
+expect_poset: yes
+expect_total: yes
+expect_cover: 1>2 2>3
+expect_lattice: yes
+expect_height: 3
+expect_width: 1
+
+name: antichain (only reflexive pairs)
+elements: a b c
+relation:
+auto_reflexive: yes
+expect_poset: yes
+expect_total: no
+expect_cover: none
+expect_minimal: a b c
+expect_maximal: a b c
+expect_least: none
+expect_greatest: none
+expect_lattice: no
+expect_height: 1
+expect_width: 3
+
+name: empty set
+elements:
+relation:
+expect_error: none
+expect_poset: yes
+expect_cover: none
+expect_minimal: none
+expect_least: none
+expect_lattice: yes
+expect_height: 0
+expect_width: 0
+
+name: single element
+elements: x
+relation:
+auto_reflexive: yes
+expect_poset: yes
+expect_total: yes
+expect_cover: none
+expect_least: x
+expect_greatest: x
+expect_lattice: yes
+expect_height: 1
+expect_width: 1
+
+name: empty relation on a non-empty set
+elements: 1 2
+relation:
+expect_poset: no
+expect_failed_axiom: reflexive
+expect_reflexive: no
+expect_symmetric: yes
+expect_antisymmetric: yes
+expect_transitive: yes
+expect_equivalence: no
+
+name: reflexive pairs missing
+elements: 1 2
+relation: 1>2
+expect_poset: no
+expect_failed_axiom: reflexive
+expect_symmetric: no
+
+name: symmetric pair between distinct elements
+elements: 1 2
+relation: 1>1 2>2 1>2 2>1
+expect_poset: no
+expect_failed_axiom: antisymmetric
+expect_symmetric: yes
+expect_transitive: yes
+expect_equivalence: yes
+
+name: not transitive
+elements: 1 2 3
+relation: 1>2 2>3
+auto_reflexive: yes
+expect_poset: no
+expect_failed_axiom: transitive
+expect_antisymmetric: yes
+expect_cycle: no
+
+name: three-cycle
+elements: 1 2 3
+relation: 1>2 2>3 3>1
+auto_reflexive: yes
+expect_poset: no
+expect_failed_axiom: transitive
+expect_antisymmetric: yes
+expect_cycle: yes
+
+name: complete relation is an equivalence
+elements: 1 2 3
+relation: 1>2 2>3 3>1 1>3 2>1 3>2
+auto_reflexive: yes
+expect_poset: no
+expect_failed_axiom: antisymmetric
+expect_equivalence: yes
+expect_cycle: yes
+
+name: congruence classes
+elements: 1 2 3 4
+relation: 1>3 3>1 2>4 4>2
+auto_reflexive: yes
+expect_equivalence: yes
+expect_failed_axiom: antisymmetric
+
+name: N shape (not a lattice)
+elements: a b c d
+relation: a>c b>c b>d
+auto_reflexive: yes
+expect_poset: yes
+expect_cover: a>c b>c b>d
+expect_minimal: a b
+expect_maximal: c d
+expect_least: none
+expect_greatest: none
+expect_lattice: no
+expect_height: 2
+expect_width: 2
+
+name: two incomparable maximal elements
+elements: a b c
+relation: a>b a>c
+auto_reflexive: yes
+expect_cover: a>b a>c
+expect_minimal: a
+expect_maximal: b c
+expect_least: a
+expect_greatest: none
+expect_lattice: no
+expect_height: 2
+expect_width: 2
+
+name: divisibility with two bottoms and two tops
+elements: 2 3 4 6 9 12 18
+rule: divisibility
+expect_cover: 2>4 2>6 3>6 3>9 4>12 6>12 6>18 9>18
+expect_minimal: 2 3
+expect_maximal: 12 18
+expect_least: none
+expect_greatest: none
+expect_lattice: no
+expect_height: 3
+expect_width: 3
+
+name: two common multiples, no lub
+elements: 1 2 3 12 18 36
+rule: divisibility
+expect_cover: 1>2 1>3 2>12 2>18 3>12 3>18 12>36 18>36
+expect_lattice: no
+expect_height: 4
+expect_width: 2
+
+name: matrix input
+elements: a b c
+matrix: 110;010;111
+expect_poset: yes
+expect_total: yes
+expect_cover: c>a a>b
+expect_least: c
+expect_greatest: b
+
+name: subsets that are not a lattice
+elements: a b ab ac
+rule: subset
+expect_minimal: a b
+expect_maximal: ab ac
+expect_lattice: no
+
+name: powers of two form a chain
+elements: 1 2 4 8 16
+rule: divisibility
+expect_total: yes
+expect_cover: 1>2 2>4 4>8 8>16
+expect_width: 1
+
+name: duplicate pairs are ignored
+elements: 1 2
+relation: 1>2 (1,2) 1<=2
+auto_reflexive: yes
+expect_error: none
+expect_poset: yes
+expect_cover: 1>2
+
+name: auto reflexive makes it a poset
+elements: 1 2 3
+relation: 1>2 2>3 1>3
+auto_reflexive: yes
+expect_poset: yes
+expect_total: yes
+
+name: same relation without auto reflexive
+elements: 1 2 3
+relation: 1>2 2>3 1>3
+expect_poset: no
+expect_failed_axiom: reflexive
+
+name: error duplicate element
+elements: 1 2 2
+relation:
+expect_error: elements
+
+name: error pair uses element outside A
+elements: 1 2
+relation: 1>3
+expect_error: relation
+
+name: error too many elements
+elements: 1 2 3 4 5 6 7 8 9 10 11 12 13
+relation:
+expect_error: elements
+
+name: error invalid label
+elements: a! b
+relation:
+expect_error: elements
+
+name: error matrix not square
+elements: a b
+matrix: 11
+expect_error: matrix
+
+name: error unreadable pair
+elements: 1 2
+relation: 1=2
+expect_error: relation
+
+name: error divisibility needs numbers
+elements: 1 2 x
+rule: divisibility
+expect_error: elements

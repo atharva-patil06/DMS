@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HasseQuest</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="brand-mark">&#9651;</span> HasseQuest</div>
+  <nav class="tabs" role="tablist">
+    <button class="tab active" data-view="sandbox" role="tab">Sandbox / Solver</button>
+    <button class="tab" data-view="campaign" role="tab">Campaign</button>
+  </nav>
+  <div class="score-chip" title="Campaign score">Score <strong id="scoreChip">0</strong></div>
+</header>
+
+<div id="banner" class="banner hidden" role="alert"></div>
+
+<main class="layout">
+  <!-- ============ LEFT: controls ============ -->
+  <aside class="panel left">
+    <!-- Sandbox controls -->
+    <section id="sandboxControls">
+      <h2>Your set and relation</h2>
+      <label class="field">Load example
+        <select id="exampleSelect">
+          <option value="">Choose an example...</option>
+        </select>
+      </label>
+
+      <label class="field">Elements of A
+        <input id="elementsInput" type="text" placeholder="e.g. 1, 2, 3, 4, 6, 12" autocomplete="off">
+        <span class="help">1 to 12 labels (letters, digits, _), separated by commas. Leave blank for the empty set.</span>
+      </label>
+      <div class="quick-row">
+        <button class="small" id="divisorsBtn">Divisors of</button>
+        <input id="divisorsN" class="tiny" type="text" value="36" aria-label="n">
+        <span class="spacer"></span>
+        <button class="small" id="powersetBtn">Power set of</button>
+        <input id="powersetLetters" class="tiny" type="text" value="abc" aria-label="letters">
+      </div>
+      <div class="quick-row">
+        <button class="small" id="randomBtn">Random</button>
+        <select id="randomType" class="tiny-select" aria-label="random type">
+          <option value="random">poset</option>
+          <option value="divisibility">divisibility</option>
+          <option value="subset">subsets</option>
+          <option value="leq">&le; chain</option>
+        </select>
+        <input id="randomSize" class="tiny" type="text" value="7" aria-label="size">
+      </div>
+
+      <div class="method-tabs" role="tablist">
+        <button class="method active" data-method="pairs">Pairs</button>
+        <button class="method" data-method="matrix">Matrix</button>
+        <button class="method" data-method="rule">Rule</button>
+        <button class="method" data-method="click">Click</button>
+      </div>
+
+      <div class="method-panel" data-panel="pairs">
+        <label class="field">Pairs in R
+          <textarea id="relationInput" rows="3" placeholder="(1,2), (1,4), 2<=4 or 1>2; 2>4"></textarea>
+          <span class="help">Write (a,b), a&lt;=b or a&gt;b. Each means a &le; b.</span>
+        </label>
+      </div>
+      <div class="method-panel hidden" data-panel="matrix">
+        <button class="small" id="makeGridBtn">Make grid from elements</button>
+        <div id="matrixGrid" class="matrix-grid"></div>
+        <span class="help">Row a, column b on (1) means (a,b) is in R.</span>
+      </div>
+      <div class="method-panel hidden" data-panel="rule">
+        <label class="field">Rule
+          <select id="ruleSelect">
+            <option value="divisibility">a divides b (divisibility)</option>
+            <option value="subset">a is a subset of b (letters; e = empty set)</option>
+            <option value="leq">a &le; b (numbers)</option>
+          </select>
+        </label>
+      </div>
+      <div class="method-panel hidden" data-panel="click">
+        <p class="help">Click an element, then another, to add the pair (first &le; second). Click the same element twice for (a,a). Click an arrow to remove it.</p>
+        <button class="small" id="placeNodesBtn">Place elements on canvas</button>
+        <button class="small" id="clearClickBtn">Clear pairs</button>
+        <div id="clickPairs" class="pair-list"></div>
+      </div>
+
+      <label class="check"><input type="checkbox" id="autoReflexive"> Auto-add reflexive pairs (a,a)</label>
+      <p class="help">A partial order needs (a,a) for every a. Tick this to add them for you; the analysis will say exactly which pairs were added.</p>
+
+      <button class="primary big" id="analyzeBtn">Analyze</button>
+
+      <div class="subsection">
+        <h3>Bounds of a subset S</h3>
+        <label class="field">S
+          <input id="subsetInput" type="text" placeholder="e.g. 4, 6 (or click nodes)">
+        </label>
+        <label class="check"><input type="checkbox" id="pickSubset"> Pick S by clicking nodes</label>
+        <button class="secondary" id="boundsBtn">Compute bounds</button>
+        <div id="boundsResult" class="result-box hidden"></div>
+      </div>
+
+      <div class="subsection">
+        <h3>Practice: draw it yourself</h3>
+        <p class="help">Hide the edges, draw the Hasse diagram, and let the engine judge it.</p>
+        <button class="secondary" id="practiceBtn">Start practice</button>
+        <button class="secondary hidden" id="checkPracticeBtn">Check my diagram</button>
+      </div>
+    </section>
+
+    <!-- Campaign controls -->
+    <section id="campaignControls" class="hidden">
+      <div id="levelListView">
+        <h2>Campaign</h2>
+        <div class="campaign-score"><span id="campaignTotal">0</span> / <span id="campaignMax">0</span> points</div>
+        <ol id="levelList" class="level-list"></ol>
+        <div class="row">
+          <button class="small" id="resetBtn">Reset progress</button>
+          <button class="small" id="unlockAllBtn" title="For demos: open every level">Demo: unlock all</button>
+        </div>
+      </div>
+      <div id="levelView" class="hidden">
+        <button class="link" id="backToLevels">&larr; All levels</button>
+        <div class="level-head">
+          <span id="levelType" class="badge"></span>
+          <span id="levelPoints" class="points"></span>
+        </div>
+        <h2 id="levelTitle"></h2>
+        <p id="levelDescription"></p>
+        <p id="levelTip" class="tip hidden"></p>
+        <div id="levelRelation" class="relation-box"></div>
+        <div id="bossTimer" class="timer hidden"><div class="timer-bar"><span id="timerFill"></span></div><span id="timerText"></span></div>
+        <div id="levelTask"></div>
+        <div class="row">
+          <button class="primary" id="submitBtn">Submit answer</button>
+          <button class="secondary" id="hintBtn">Hint</button>
+        </div>
+        <div id="hintBox" class="hint-box hidden"></div>
+        <div id="resultBox" class="result-box hidden"></div>
+        <ul id="feedbackList" class="feedback-list"></ul>
+      </div>
+    </section>
+  </aside>
+
+  <!-- ============ CENTRE: canvas ============ -->
+  <section class="panel center">
+    <div class="canvas-toolbar">
+      <span id="canvasTitle" class="canvas-title">Hasse diagram</span>
+      <span class="spacer"></span>
+      <span id="toolButtons" class="tool-buttons"></span>
+      <button class="small" id="autoLayoutBtn">Auto-layout</button>
+    </div>
+    <svg id="canvas" class="canvas" role="img" aria-label="Hasse diagram"></svg>
+    <div class="legend">
+      <span><i class="dot minimal"></i>minimal</span>
+      <span><i class="dot maximal"></i>maximal</span>
+      <span><i class="dot ring"></i>least / greatest</span>
+      <span><i class="dot subset"></i>subset S</span>
+      <span><i class="line wrong"></i>wrong edge</span>
+      <span><i class="line correct"></i>correct edge</span>
+    </div>
+    <div id="summary" class="summary"></div>
+  </section>
+
+  <!-- ============ RIGHT: working / theory / score ============ -->
+  <aside class="panel right">
+    <div class="side-tabs" role="tablist">
+      <button class="side-tab active" data-side="working">Show Working</button>
+      <button class="side-tab" data-side="theory">Theory</button>
+      <button class="side-tab" data-side="score">Score</button>
+    </div>
+    <div class="side-panel" data-sidepanel="working">
+      <div id="working" class="working"><p class="muted">Run an analysis to see every step: the relation matrix, each property test, Warshall's algorithm, every covering test and every lub/glb.</p></div>
+    </div>
+    <div class="side-panel hidden" data-sidepanel="theory">
+      <div class="theory">
+        <p>Let A be a finite set and R &sube; A &times; A a relation.</p>
+        <dl>
+          <dt>Reflexive</dt><dd>&forall;a &isin; A, (a,a) &isin; R</dd>
+          <dt>Symmetric</dt><dd>(a,b) &isin; R &rArr; (b,a) &isin; R</dd>
+          <dt>Antisymmetric</dt><dd>(a,b) &isin; R &and; (b,a) &isin; R &rArr; a = b</dd>
+          <dt>Transitive</dt><dd>(a,b) &isin; R &and; (b,c) &isin; R &rArr; (a,c) &isin; R</dd>
+          <dt>Partial order (POSET)</dt><dd>Reflexive, antisymmetric and transitive. Written (A, &le;).</dd>
+          <dt>Equivalence relation</dt><dd>Reflexive, symmetric and transitive. It splits A into equivalence classes [a] = {b : a R b}.</dd>
+          <dt>Comparable</dt><dd>a and b are comparable iff a &le; b or b &le; a.</dd>
+          <dt>Covering relation</dt><dd>b covers a iff a &lt; b and there is no c with a &lt; c &lt; b.</dd>
+          <dt>Hasse diagram</dt><dd>The graph of the covering relation: smaller elements lower, no loops, no edges implied by transitivity, no arrowheads (direction is upward).</dd>
+          <dt>Minimal / maximal</dt><dd>No element strictly below / above it. There can be several.</dd>
+          <dt>Least / greatest</dt><dd>Below / above every element. Unique if it exists.</dd>
+          <dt>Upper / lower bound of S</dt><dd>u with s &le; u for all s &isin; S / l with l &le; s for all s &isin; S.</dd>
+          <dt>lub (join, &or;) / glb (meet, &and;)</dt><dd>The least upper bound / greatest lower bound, if it exists.</dd>
+          <dt>Lattice</dt><dd>A poset in which every pair {a,b} has both a lub and a glb.</dd>
+          <dt>Chain / antichain</dt><dd>Every two elements comparable / no two distinct elements comparable.</dd>
+          <dt>Height / width</dt><dd>Size of a longest chain / of a largest antichain.</dd>
+          <dt>Warshall's algorithm</dt><dd>For k = 1..n: W[i][j] = W[i][j] OR (W[i][k] AND W[k][j]). The result is the transitive closure R<sup>+</sup>.</dd>
+        </dl>
+      </div>
+    </div>
+    <div class="side-panel hidden" data-sidepanel="score">
+      <div id="scorePanel" class="score-panel"><p class="muted">Play campaign levels to earn points and stars.</p></div>
+    </div>
+  </aside>
+</main>
+
+<script src="js/api.js"></script>
+<script src="js/canvas.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+# Level type 6: Boss. A random poset (6 to 9 elements) is generated each time
+# the level is opened. Build the Hasse diagram, mark minimal and maximal
+# elements and decide whether it is a lattice, against a 3 minute timer.
+
+id: 13
+type: boss
+title: Boss: random poset
+description: A fresh random poset. Build its Hasse diagram, mark the minimal and maximal elements and decide if it is a lattice, before the timer runs out.
+points: 300
+unlock_after: 12
